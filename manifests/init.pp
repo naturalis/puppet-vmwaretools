@@ -44,11 +44,12 @@ class vmwaretools (
       case $architecture {
       	x86_64: {
       	  exec {'setup vmware yum repository':
-      	    command	=> "/usr/bin/yum -y install ${yum_vmware_repo_link}"
+      	    command	=> "/usr/bin/yum -y install ${yum_vmware_repo_link}",
+      	    unless	=> '/usr/bin/test -f /etc/yum.repos.d/vmware-osps.repo',
           }
           package {'vmware-tools-esx-nox':
             ensure => present,
-            require => Exec['setup vmware yum repository']
+            require => Exec['setup vmware yum repository'],
           }
       	}
       	default: { fail('Unknown architecture') }
