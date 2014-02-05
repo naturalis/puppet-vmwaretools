@@ -46,8 +46,8 @@ class vmwaretools (
       	  exec {'setup vmware yum repository':
       	    command	=> "/usr/bin/yum -y install ${yum_vmware_repo_link}"
           }
-          exec {'install vmware redhad x86_package':
-            command => '/usr/bin/yum -y install',
+          package {'vmware-tools-esx-nox':
+            ensure => present,
             require => Exec['setup vmware yum repository']
           }
       	}
