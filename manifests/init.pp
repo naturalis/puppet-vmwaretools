@@ -35,7 +35,27 @@
 #
 # Copyright 2014 Your name here, unless otherwise noted.
 #
-class vmwaretools {
+class vmwaretools (
+  $yum_vmware_repo_link	='http://packages.vmware.com/tools/esx/5.5latest/repos/vmware-tools-repo-RHEL6-9.4.0-1.el6.x86_64.rpm'
+){
+
+  case $osfamily {
+    RedHat: {
+      case $architecture {
+      	x86_64: {
+      	  exec {'setup vmware yum repository':
+      	    command	=> "/usr/bin/yum -y install ${yum_vmware_repo_link}"
+          }
+          exec {'install vmware redhad x86_package':
+            command => '/usr/bin/yum -y install',
+            require => Exec['setup vmware yum repository']
+          }
+      	}
+      	default: { fail('Unknown architecture') }
+      }
+    }
+    default: { fail('Unrecognized operating system') }
+  }
 
 
 }
