@@ -55,8 +55,26 @@ class vmwaretools (
       	default: { fail('Unknown architecture') }
       }
     }
+    Debian: {
+      case $architecture {
+        amd64: {
+          apt::source { 'vmware_tools':
+            location          => 'http://packages.vmware.com/tools/esx/5.0latest/ubuntu',
+            release           => $::lsbdistcodename,
+            repos             => 'main',
+            key               => 'vmware_tools',
+            key_source        => 'http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub',
+            include_src       => false
+          }
+          package {'vmware-tools-esx-nox':
+            ensure => present,
+            require => Apt::Source['vmware_tools'],
+          }
+        }
+        default: { fail('Unknown architecture') }
+      }
+    } 
+    
     default: { fail('Unrecognized operating system') }
   }
-
-
 }
